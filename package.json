@@ -1,0 +1,32 @@
+{
+  "name": "@openapi-sdk-tools/nestjs",
+  "version": "1.0.0",
+  "description": "NestJS DI wrapper for OpenAPI SDK generator clients",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@openapi-sdk-tools/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.5.4"
+  },
+  "peerDependencies": {
+    "@nestjs/axios": "^3.0.0",
+    "@nestjs/common": "^10.0.0 || ^11.0.0",
+    "@nestjs/swagger": "^7.0.0 || ^8.0.0",
+    "neverthrow": "^8.0.0",
+    "rxjs": "^7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/swagger": {
+      "optional": true
+    }
+  }
+}
