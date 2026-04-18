@@ -10,6 +10,8 @@ export interface ClientOptions {
   adapter?: HttpAdapter;
   errorMapper?: SdkErrorMapper;
   defaultHeaders?: Record<string, string>;
+  errorDiscriminatorKey?: string;
+  apiVersion?: `${number}`;
 }
 
 export interface NestSdkModuleAsyncOptions {
@@ -69,7 +71,10 @@ export class NestSdkModule {
       provide: ClientClass,
       useFactory: async (httpService: HttpService, ...args: any[]) => {
         const options = await asyncOptions.useFactory(...args);
-        return new ClientClass({ ...options, adapter: new AxiosAdapter(httpService) });
+        return new ClientClass({
+          ...options,
+          adapter: new AxiosAdapter(httpService),
+        });
       },
       inject: [HttpService, ...(asyncOptions.inject ?? [])],
     };
