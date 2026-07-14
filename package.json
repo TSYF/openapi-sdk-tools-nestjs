@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "private": false,
   "scripts": {
     "clean": "rimraf dist",
     "build": "tsc -p tsconfig.json"
