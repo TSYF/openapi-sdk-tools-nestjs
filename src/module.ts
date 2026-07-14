@@ -5,19 +5,23 @@ import type { HttpAdapter, SdkErrorMapper } from "@openapi-sdk-tools/core";
 
 // ─── Options ─────────────────────────────────────────────────────────────────
 
-export interface ClientOptions {
+export interface ClientOptions<TError = unknown> {
   baseUrl: string;
   adapter?: HttpAdapter;
-  errorMapper?: SdkErrorMapper;
+  errorMapper?: SdkErrorMapper<TError>;
   defaultHeaders?: Record<string, string>;
-  errorDiscriminatorKey?: string;
+  errorDiscriminatorKey?: string[];
   apiVersion?: `${number}`;
+  /** How to transmit version: 'header' sends x-api-version (default), 'path' prepends /version to route. */
+  apiVersionStrategy?: "header" | "path";
 }
 
-export interface NestSdkModuleAsyncOptions {
+export interface NestSdkModuleAsyncOptions<TError = unknown> {
   useFactory: (
     ...args: any[]
-  ) => Omit<ClientOptions, "adapter"> | Promise<Omit<ClientOptions, "adapter">>;
+  ) =>
+    | Omit<ClientOptions<TError>, "adapter">
+    | Promise<Omit<ClientOptions<TError>, "adapter">>;
   inject?: any[];
   imports?: any[];
 }
@@ -44,9 +48,9 @@ export interface NestSdkModuleAsyncOptions {
  */
 @Module({})
 export class NestSdkModule {
-  static register<T>(
-    ClientClass: new (options: ClientOptions) => T,
-    options: Omit<ClientOptions, "adapter">,
+  static register<T, TError = unknown>(
+    ClientClass: new (options: ClientOptions<TError>) => T,
+    options: Omit<ClientOptions<TError>, "adapter">,
   ): DynamicModule {
     const provider: Provider = {
       provide: ClientClass,
@@ -63,9 +67,9 @@ export class NestSdkModule {
     };
   }
 
-  static registerAsync<T>(
-    ClientClass: new (options: ClientOptions) => T,
-    asyncOptions: NestSdkModuleAsyncOptions,
+  static registerAsync<T, TError = unknown>(
+    ClientClass: new (options: ClientOptions<TError>) => T,
+    asyncOptions: NestSdkModuleAsyncOptions<TError>,
   ): DynamicModule {
     const provider: Provider = {
       provide: ClientClass,
