@@ -4,4 +4,5 @@ export {
   NestSdkModule,
   type ClientOptions,
   type NestSdkModuleAsyncOptions,
+  type NestSdkModuleRegisterOptions,
 } from "./module";

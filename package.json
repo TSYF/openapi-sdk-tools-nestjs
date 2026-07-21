@@ -1,6 +1,6 @@
 {
   "name": "@openapi-sdk-tools/nestjs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "NestJS DI wrapper for OpenAPI SDK generator clients",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,7 +11,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@openapi-sdk-tools/core": "workspace:*"
+    "@openapi-sdk-tools/core": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

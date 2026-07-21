@@ -26,6 +26,11 @@ export interface NestSdkModuleAsyncOptions<TError = unknown> {
   imports?: any[];
 }
 
+export interface NestSdkModuleRegisterOptions {
+  /** Make SDK provider globally available across the app. */
+  global?: boolean;
+}
+
 // ─── NestSdkModule ────────────────────────────────────────────────────────────
 
 /**
@@ -51,6 +56,7 @@ export class NestSdkModule {
   static register<T, TError = unknown>(
     ClientClass: new (options: ClientOptions<TError>) => T,
     options: Omit<ClientOptions<TError>, "adapter">,
+    moduleOptions: NestSdkModuleRegisterOptions = {},
   ): DynamicModule {
     const provider: Provider = {
       provide: ClientClass,
@@ -61,6 +67,7 @@ export class NestSdkModule {
 
     return {
       module: NestSdkModule,
+      global: moduleOptions.global ?? false,
       imports: [HttpModule],
       providers: [provider],
       exports: [ClientClass],
@@ -70,6 +77,7 @@ export class NestSdkModule {
   static registerAsync<T, TError = unknown>(
     ClientClass: new (options: ClientOptions<TError>) => T,
     asyncOptions: NestSdkModuleAsyncOptions<TError>,
+    moduleOptions: NestSdkModuleRegisterOptions = {},
   ): DynamicModule {
     const provider: Provider = {
       provide: ClientClass,
@@ -85,6 +93,7 @@ export class NestSdkModule {
 
     return {
       module: NestSdkModule,
+      global: moduleOptions.global ?? false,
       imports: [HttpModule, ...(asyncOptions.imports ?? [])],
       providers: [provider],
       exports: [ClientClass],
