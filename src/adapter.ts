@@ -1,8 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { HttpService } from "@nestjs/axios";
-import { ResultAsync } from "neverthrow";
 import { lastValueFrom } from "rxjs";
-import type { HttpAdapter, HttpRequestError, RequestOptions } from "@openapi-sdk-tools/core";
+import type {
+  HttpAdapter,
+  HttpRequestError,
+  RequestOptions,
+} from "@openapi-sdk-tools/core";
 
 /**
  * HttpAdapter implementation backed by @nestjs/axios HttpService.
@@ -13,9 +16,9 @@ import type { HttpAdapter, HttpRequestError, RequestOptions } from "@openapi-sdk
 export class AxiosAdapter implements HttpAdapter {
   constructor(private readonly httpService: HttpService) {}
 
-  request<T>(options: RequestOptions): ResultAsync<T, HttpRequestError> {
-    return ResultAsync.fromPromise(
-      lastValueFrom(
+  async request<T>(options: RequestOptions): Promise<T> {
+    try {
+      const response = await lastValueFrom(
         this.httpService.request<T>({
           method: options.method,
           url: options.url,
@@ -26,12 +29,14 @@ export class AxiosAdapter implements HttpAdapter {
             ...options.headers,
           },
         }),
-      ).then((r) => r.data),
-      (e: unknown): HttpRequestError => ({
+      );
+      return response.data;
+    } catch (e) {
+      throw {
         status: (e as any)?.response?.status ?? 500,
         body: (e as any)?.response?.data ?? null,
         message: (e as any)?.message ?? "Unknown error",
-      }),
-    );
+      } satisfies HttpRequestError;
+    }
   }
 }

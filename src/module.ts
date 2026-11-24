@@ -1,7 +1,11 @@
 import { DynamicModule, Module, Provider } from "@nestjs/common";
 import { HttpModule, HttpService } from "@nestjs/axios";
 import { AxiosAdapter } from "./adapter";
-import type { HttpAdapter, SdkErrorMapper } from "@openapi-sdk-tools/core";
+import type {
+  HttpAdapter,
+  SdkErrorMapper,
+  SdkPlugin,
+} from "@openapi-sdk-tools/core";
 
 // ─── Options ─────────────────────────────────────────────────────────────────
 
@@ -14,6 +18,8 @@ export interface ClientOptions<TError = unknown> {
   apiVersion?: `${number}`;
   /** How to transmit version: 'header' sends x-api-version (default), 'path' prepends /version to route. */
   apiVersionStrategy?: "header" | "path";
+  /** Kernel plugins: result backend, match strategy, and/or error decoder. */
+  plugins?: SdkPlugin[];
 }
 
 export interface NestSdkModuleAsyncOptions<TError = unknown> {
